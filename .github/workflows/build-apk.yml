@@ -18,19 +18,21 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install project dependencies
-        run: npm install
-
-      - name: Create temporary RN project
+      - name: Create temporary RN project (with android)
         run: |
           npx react-native init TempProject --version 0.74.0
           rm -rf android
           mv TempProject/android .
           rm -rf TempProject
 
-      - name: Configure Gradle (disable Hermes)
+      - name: Install dependencies (including react-native-worklets)
         run: |
-          sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle
+          npm install
+          npm install react-native-worklets
+
+      - name: Disable Hermes (optional but reduces errors)
+        run: |
+          sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle || true
 
       - name: Set up JDK
         uses: actions/setup-java@v4
