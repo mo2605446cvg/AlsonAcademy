@@ -1,2 +1,19 @@
-rootProject.name = 'alson-academy'
+pluginManagement {
+    includeBuild("../node_modules/@react-native/gradle-plugin")
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id("com.facebook.react.settings")
+}
+
+// ❌ احذف أو علّق السطر ده
+// extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+rootProject.name = 'AlsonAcademy'
 include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
