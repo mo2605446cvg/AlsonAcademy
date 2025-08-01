@@ -1,4 +1,4 @@
-name: Build APK
+name: Build APK from React Native JS-only
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -18,10 +18,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install JavaScript dependencies
+      - name: Install JS dependencies
         run: npm install
 
-      - name: Install native dependency (react-native-worklets)
+      - name: Install native required deps
         run: npm install react-native-worklets
 
       - name: Set up JDK
@@ -30,7 +30,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build APK
+      - name: Build Android APK
         run: |
           cd android
           chmod +x ./gradlew
