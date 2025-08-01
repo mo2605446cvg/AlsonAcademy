@@ -26,7 +26,8 @@ android {
 def hermesEnabled = project.getProperties().get("hermesEnabled")?.toBoolean() ?: false
 
 dependencies {
-    implementation("com.facebook.react:react-android")
+   implementation("com.facebook.react:react-native:0.74.5")
+
 
     if (hermesEnabled) {
         implementation("com.facebook.react:hermes-android")
