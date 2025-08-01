@@ -1,32 +1,22 @@
-apply plugin: "com.android.application"
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    namespace "com.alsonacademy" // ✅ حل المشكلة هنا
+
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.alsonacademy"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
 
     buildTypes {
-        debug {
-            shrinkResources false
-            minifyEnabled false
-        }
         release {
-            shrinkResources true
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
-    buildFeatures {
-        viewBinding true
-    }
 }
 
-dependencies {
-    implementation "com.facebook.react:react-native:+"
 }
