@@ -1,9 +1,8 @@
-name: Build APK
+name: Build APK from JS-only project
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout repo
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -19,22 +18,24 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install project dependencies
         run: npm install
 
-      - name: Install React Native CLI
-        run: npm install -g react-native-cli
+      - name: Create temporary RN project
+        run: |
+          npx react-native init TempProject --version 0.74.0
+          rm -rf android
+          mv TempProject/android .
+          rm -rf TempProject
 
-      - name: Recreate android folder
-        run: npx react-native init tempApp && cp -r tempApp/android ./ && rm -rf tempApp
+      - name: Configure Gradle (disable Hermes)
+        run: |
+          sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle
 
-      - name: Disable Hermes (use JSC)
-        run: sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle
-
-      - name: Set up Java
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 17
 
       - name: Build APK
@@ -47,4 +48,5 @@ jobs:
         with:
           name: app-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
 
