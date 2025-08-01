@@ -15,5 +15,9 @@ plugins {
 // extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
 
 rootProject.name = 'AlsonAcademy'
+
 include ':app'
-includeBuild('../node_modules/@react-native/gradle-plugin')
+
+apply from: file("../node_modules/react-native/scripts/react_native_pods.gradle")
+applyNativeModulesSettingsGradle(settings)
+
