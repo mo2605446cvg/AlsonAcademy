@@ -18,6 +18,6 @@ rootProject.name = 'AlsonAcademy'
 
 include ':app'
 
-apply from: file("../node_modules/react-native/scripts/react_native_pods.gradle")
+// apply from: file("../node_modules/react-native/scripts/react_native_pods.gradle")
 applyNativeModulesSettingsGradle(settings)
 
