@@ -1,4 +1,4 @@
-name: Build APK from Flutter State
+name: Build APK from JS-only project
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout code
+      - name: Checkout project
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -18,11 +18,18 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install JS dependencies
+      - name: Install project dependencies
         run: npm install
 
-      - name: Install native required deps
-        run: npm install react-native-worklets
+      - name: Create temporary RN project
+        run: |
+          npx @react-native-community/cli init TempProject --version 0.75.3 --skip-install
+          cp -r TempProject/android .
+          rm -rf TempProject
+
+      - name: Configure Gradle (disable Hermes)
+        run: |
+          sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle || true
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -30,17 +37,16 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build Android APK
-        run: |
-          cd android
-          chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon
+      - name: Build APK
+        working-directory: android
+        run: ./gradlew assembleDebug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
 
 
 
