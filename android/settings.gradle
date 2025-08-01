@@ -1,23 +1,11 @@
 pluginManagement {
-    includeBuild("../node_modules/@react-native/gradle-plugin")
     repositories {
-        gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url("$rootDir/../node_modules/react-native/android") } // ✅ مهم جداً
     }
 }
 
-plugins {
-    id("com.facebook.react.settings")
-}
+rootProject.name = "AlsonAcademy"
 
-// ❌ احذف أو علّق السطر ده
-// extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
-
-rootProject.name = 'AlsonAcademy'
-
-include ':app'
-
-// apply from: file("../node_modules/react-native/scripts/react_native_pods.gradle")
-// applyNativeModulesSettingsGradle(settings)
-
+apply from: file("../node_modules/react-native/react.gradle") // أو احذفها لو مش محتاج pods
