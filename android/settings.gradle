@@ -1,11 +1,8 @@
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url("$rootDir/../node_modules/react-native/android") } // ✅ مهم جداً
-    }
+rootProject.name = 'AlsonAcademy'
+include ':app'
+
+def reactNativeDir = file("../node_modules/react-native")
+def reactGradle = new File(reactNativeDir, "react.gradle")
+if (reactGradle.exists()) {
+    apply from: reactGradle
 }
-
-rootProject.name = "AlsonAcademy"
-
-apply from: file("../node_modules/react-native/react.gradle") // أو احذفها لو مش محتاج pods
