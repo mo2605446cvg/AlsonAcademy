@@ -1,4 +1,4 @@
-name: Build APK from JS-only project
+name: Build APK from Flutter State
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout project
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -18,17 +18,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install project dependencies
+      - name: Install JS dependencies
         run: npm install
 
-      - name: Install required native deps
+      - name: Install native required deps
         run: npm install react-native-worklets
-
-      - name: Create temporary RN project (v0.75.3)
-        run: |
-          npx @react-native-community/cli init TempProject --version 0.75.3 --skip-install
-          cp -r TempProject/android .
-          rm -rf TempProject
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -36,16 +30,18 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build APK
+      - name: Build Android APK
         run: |
           cd android
+          chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
 
 
 
