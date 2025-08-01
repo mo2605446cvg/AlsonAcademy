@@ -1,4 +1,4 @@
-name: Build APK from JS-only project
+name: Build APK from React Native
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Checkout project
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -18,18 +18,19 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install project dependencies
-        run: npm install
-
-      - name: Create temporary RN project
+      - name: Install JS dependencies
         run: |
-          npx @react-native-community/cli init TempProject --version 0.75.3 --skip-install
-          cp -r TempProject/android .
-          rm -rf TempProject
+          npm install
+          npm install react-native-worklets
 
-      - name: Configure Gradle (disable Hermes)
+      - name: Verify React Native version
         run: |
-          sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle || true
+          RN_VERSION=$(node -p "require('./package.json').dependencies['react-native']")
+          echo "Using React Native version $RN_VERSION"
+          if [[ "$RN_VERSION" < "0.75.0" ]]; then
+            echo "❌ React Native version must be >= 0.75.0"
+            exit 1
+          fi
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -37,15 +38,18 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Build APK
-        working-directory: android
-        run: ./gradlew assembleDebug
+      - name: Build Android APK
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
 
 
 
