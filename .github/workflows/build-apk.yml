@@ -18,19 +18,22 @@ jobs:
         with:
           node-version: 18
 
+      - name: Install community CLI (for RN init)
+        run: npm install -g @react-native-community/cli
+
       - name: Create temporary RN project (with android)
         run: |
-          npx react-native init TempProject --version 0.74.0
+          npx @react-native-community/cli init TempProject --version 0.74.0
           rm -rf android
           mv TempProject/android .
           rm -rf TempProject
 
-      - name: Install dependencies (including react-native-worklets)
+      - name: Install dependencies
         run: |
           npm install
           npm install react-native-worklets
 
-      - name: Disable Hermes (optional but reduces errors)
+      - name: Disable Hermes (optional)
         run: |
           sed -i 's/hermesEnabled: true/hermesEnabled: false/' android/app/build.gradle || true
 
@@ -50,5 +53,6 @@ jobs:
         with:
           name: app-debug.apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
 
 
